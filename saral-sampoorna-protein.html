@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saral Sampoorna — Daily Protein Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FCFBF8;--white:#FFFFFF;--navy:#15356B;--navy-deep:#0E2750;
+    --royal:#2D6CC0;--royal-soft:#E4EDF8;--beige:#F2E9D8;--beige-deep:#EADCC3;
+    --gold:#C2A14C;--ink:#1A2233;--muted:#5E6B82;--line:#E7E0D2;
+    --good:#3A8A55;--warn:#C2773A;
+    --shadow:0 18px 50px -22px rgba(21,53,107,.30);--shadow-sm:0 8px 24px -16px rgba(21,53,107,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Manrope',system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:600;line-height:1.08;letter-spacing:-.01em}
+
+  /* topbar */
+  .topbar{background:linear-gradient(100deg,var(--navy-deep),var(--navy));color:#fff}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:14px;padding-bottom:14px}
+  .initiative{display:flex;align-items:center;gap:14px}
+  .initiative .seal{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;flex:none;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25)}
+  .initiative .seal svg{width:18px;height:18px}
+  .initiative .txt strong{font-size:13.5px;letter-spacing:.10em;font-weight:700;display:block}
+  .initiative .txt span{font-size:10.5px;letter-spacing:.22em;opacity:.7;display:flex;align-items:center;gap:8px}
+  .initiative .txt span::before{content:"";width:18px;height:1px;background:rgba(255,255,255,.5)}
+  .flagtag{display:flex;align-items:center;gap:10px;font-size:10px;letter-spacing:.14em;line-height:1.25;font-weight:700;text-align:right;opacity:.92}
+  .flag{width:26px;height:18px;border-radius:3px;overflow:hidden;flex:none;border:1px solid rgba(255,255,255,.3)}
+  .flag i{display:block;height:6px}.flag .s{background:#FF9933}.flag .w{background:#fff;position:relative}.flag .g{background:#138808}
+  .flag .w::after{content:"";position:absolute;inset:0;margin:auto;width:6px;height:6px;border-radius:50%;border:1.4px solid #15356B}
+
+  /* brand row */
+  .brandrow{border-bottom:1px solid var(--line);background:var(--white)}
+  .brandrow .wrap{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;padding-top:20px;padding-bottom:20px}
+  .logo{display:flex;align-items:center;gap:14px}
+  .logo .mark{width:50px;height:50px;border-radius:14px;flex:none;display:grid;place-items:center;background:linear-gradient(150deg,var(--royal),var(--navy));box-shadow:var(--shadow-sm)}
+  .logo .mark svg{width:26px;height:26px}
+  .logo .name{font-family:'Fraunces',serif;font-size:26px;font-weight:600;letter-spacing:-.02em;line-height:1}
+  .logo .name b{color:var(--navy);font-weight:700}.logo .name span{color:var(--gold)}
+  .logo .tag{font-size:11.5px;color:var(--muted);letter-spacing:.04em;margin-top:3px}
+  .assures{display:flex;gap:22px;flex-wrap:wrap}
+  .assure{display:flex;align-items:center;gap:9px;font-size:12.5px;font-weight:600;color:var(--ink)}
+  .assure .dot{width:22px;height:22px;border-radius:6px;background:var(--royal-soft);color:var(--royal);display:grid;place-items:center;flex:none}
+  .assure .dot svg{width:13px;height:13px}
+
+  /* hero */
+  .hero{padding:58px 0 46px;position:relative;overflow:hidden}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--royal);background:var(--royal-soft);padding:7px 13px;border-radius:30px}
+  .hero h1{font-size:clamp(38px,5.4vw,60px);margin:20px 0 0}
+  .hero h1 .b1{color:var(--ink)}.hero h1 .b2{color:var(--navy)}.hero h1 .b3{color:var(--royal);font-style:italic}
+  .rule{width:62px;height:4px;border-radius:3px;background:var(--gold);margin:22px 0 20px}
+  .hero p.lead{font-size:17px;color:var(--ink);max-width:30ch}
+  .hero p.sub{font-size:15px;color:var(--royal);font-weight:600;margin-top:10px}
+  .hero .cta-row{margin-top:28px;display:flex;gap:14px;flex-wrap:wrap}
+  .btn{font-family:'Manrope',sans-serif;font-size:15px;font-weight:700;cursor:pointer;border:none;border-radius:12px;padding:15px 26px;display:inline-flex;align-items:center;gap:10px;transition:.2s}
+  .btn-primary{background:linear-gradient(120deg,var(--royal),var(--navy));color:#fff;box-shadow:var(--shadow-sm)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 34px -16px rgba(21,53,107,.6)}
+  .btn-primary svg{width:17px;height:17px;transition:.2s}.btn-primary:hover svg{transform:translateX(4px)}
+  .btn-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--royal);color:var(--royal)}
+
+  .orbit{position:relative;aspect-ratio:1;max-width:420px;margin:0 auto;width:100%}
+  .orbit .ring{position:absolute;inset:8%;border:1.5px dashed var(--beige-deep);border-radius:50%}
+  .orbit .core{position:absolute;inset:26%;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 35%,#fff,var(--beige));box-shadow:inset 0 0 0 1px var(--line),var(--shadow)}
+  .orbit .core svg{width:46%;height:46%}
+  .node{position:absolute;background:var(--white);border:1px solid var(--line);border-radius:16px;padding:11px 14px;box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:10px;font-size:12.5px;font-weight:700;color:var(--ink);white-space:nowrap}
+  .node small{display:block;font-weight:500;color:var(--muted);font-size:10.5px}
+  .node .ic{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex:none}.node .ic svg{width:15px;height:15px}
+  .n-top{top:-4%;left:50%;transform:translateX(-50%)}.n-right{top:42%;right:-10%;transform:translateY(-50%)}
+  .n-bottom{bottom:-4%;left:50%;transform:translateX(-50%)}.n-left{top:42%;left:-10%;transform:translateY(-50%)}
+  .ic.blue{background:var(--royal-soft);color:var(--royal)}.ic.gold{background:#F6EEDA;color:var(--gold)}
+  .ic.navy{background:#E1E8F3;color:var(--navy)}.ic.green{background:#E4F0E8;color:var(--good)}
+  .float{animation:float 5s ease-in-out infinite}.float.d1{animation-delay:.6s}.float.d2{animation-delay:1.2s}.float.d3{animation-delay:1.8s}
+  @keyframes float{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-9px)}}
+  .n-right.float,.n-left.float{animation-name:floatY}
+  @keyframes floatY{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 9px))}}
+
+  /* awareness */
+  .aware{background:var(--beige);border-top:1px solid var(--beige-deep);border-bottom:1px solid var(--beige-deep)}
+  .aware .wrap{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;padding:34px 22px}
+  .fact{display:flex;gap:13px;align-items:flex-start}
+  .fact .ic{width:40px;height:40px;border-radius:11px;background:var(--white);display:grid;place-items:center;flex:none;box-shadow:var(--shadow-sm)}.fact .ic svg{width:20px;height:20px}
+  .fact .big{font-family:'Fraunces',serif;font-size:20px;font-weight:700;color:var(--navy);line-height:1.1}
+  .fact p{font-size:12.5px;color:var(--muted);margin-top:3px}
+
+  /* calculator */
+  .calc{padding:64px 0 30px}
+  .calc-head{text-align:center;max-width:620px;margin:0 auto 38px}
+  .calc-head h2{font-size:clamp(28px,4vw,40px)}.calc-head .rule{margin:16px auto 18px}
+  .calc-head p{color:var(--muted);font-size:15.5px}
+  .panel{background:var(--white);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);display:grid;grid-template-columns:1.25fr .9fr;overflow:hidden}
+  .form{padding:34px}
+  .form h3{font-size:21px;margin-bottom:4px}.form .hint{font-size:13px;color:var(--muted);margin-bottom:22px}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-size:12.5px;font-weight:700;letter-spacing:.02em;margin-bottom:8px}
+  .field label .req{color:var(--royal)}
+  input[type=text],input[type=number],select{width:100%;font-family:'Manrope',sans-serif;font-size:15px;color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:11px;padding:13px 14px;transition:.18s}
+  input:focus,select:focus{outline:none;border-color:var(--royal);background:#fff;box-shadow:0 0 0 4px var(--royal-soft)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .seg{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px}
+  .seg button{font-family:'Manrope',sans-serif;font-size:13px;font-weight:600;cursor:pointer;background:var(--paper);border:1.5px solid var(--line);border-radius:10px;padding:11px 6px;color:var(--muted);transition:.16s}
+  .seg button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+  .seg button:hover:not(.on){border-color:var(--royal);color:var(--royal)}
+  .form .btn-primary{width:100%;justify-content:center;margin-top:8px}
+  .err{color:var(--warn);font-size:12px;font-weight:600;margin-top:10px;min-height:16px}
+
+  /* result side */
+  .result{background:linear-gradient(165deg,var(--navy),var(--navy-deep));color:#fff;padding:34px;display:flex;flex-direction:column}
+  .result .placeholder{margin:auto;text-align:center;opacity:.85}
+  .result .placeholder .glyph{width:64px;height:64px;margin:0 auto 16px;border-radius:18px;background:rgba(255,255,255,.1);display:grid;place-items:center}.result .placeholder .glyph svg{width:30px;height:30px}
+  .result .placeholder h4{font-family:'Fraunces',serif;font-size:20px;font-weight:600;margin-bottom:6px}
+  .result .placeholder p{font-size:13px;opacity:.7;max-width:24ch;margin:0 auto}
+  .scoreview{display:none;flex-direction:column;height:100%}.scoreview.show{display:flex}
+  .targ-eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;opacity:.7;font-weight:700;text-align:center}
+  .targ-num{font-family:'Fraunces',serif;font-size:62px;font-weight:700;color:var(--gold);text-align:center;line-height:1;margin:6px 0 2px}
+  .targ-num small{font-size:22px;color:#fff;font-family:'Manrope';font-weight:600}
+  .targ-sub{font-size:12.5px;text-align:center;opacity:.78;max-width:30ch;margin:0 auto 22px}
+  .donut-box{display:flex;align-items:center;gap:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:18px;margin-bottom:16px}
+  .donut{position:relative;width:120px;height:120px;flex:none}
+  .donut svg{display:block}
+  .donut .dc{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+  .donut .dc b{font-family:'Fraunces',serif;font-size:24px;display:block;line-height:1}
+  .donut .dc span{font-size:9px;letter-spacing:.12em;text-transform:uppercase;opacity:.6}
+  .legend{flex:1;display:flex;flex-direction:column;gap:10px}
+  .legend .lrow{display:flex;align-items:center;gap:10px;font-size:13px}
+  .legend .lrow .d{width:11px;height:11px;border-radius:3px;flex:none}
+  .legend .lrow .k{opacity:.82}.legend .lrow .v{margin-left:auto;font-weight:800;font-variant-numeric:tabular-nums}
+  .picks{margin-bottom:16px}
+  .picks-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .picks-title{font-size:11px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;opacity:.7}
+  .picks-toggle{display:inline-flex;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);border-radius:9px;padding:3px;gap:3px}
+  .picks-toggle button{font-family:'Manrope';font-size:11.5px;font-weight:700;cursor:pointer;border:none;background:transparent;color:rgba(255,255,255,.7);padding:5px 12px;border-radius:7px;transition:.15s}
+  .picks-toggle button.on{background:var(--gold);color:#1c2a48}
+  .picks-toggle button:hover:not(.on){color:#fff}
+  .picks-list{list-style:none}
+  .picks-list li{display:flex;align-items:center;gap:11px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.09);font-size:13.5px}
+  .picks-list li:last-child{border-bottom:none}
+  .picks-list .pn{font-weight:600}
+  .picks-list .ps{font-size:11px;opacity:.6;margin-left:2px}
+  .picks-list .pv{margin-left:auto;font-family:'Fraunces';font-weight:600;color:var(--gold);font-size:16px;white-space:nowrap}
+  .picks-list .pv small{font-size:11px;color:#fff;font-family:'Manrope';font-weight:600}
+  .picks-list .star{display:inline-block;width:7px;height:7px;border-radius:2px;background:var(--gold);flex:none}
+  .note{font-size:11.5px;opacity:.7;line-height:1.5;margin-top:auto}
+  .restart{background:none;border:none;color:rgba(255,255,255,.7);font-family:'Manrope';font-size:12.5px;font-weight:600;cursor:pointer;margin-top:14px;text-decoration:underline;text-underline-offset:3px;align-self:center}
+  .restart:hover{color:#fff}
+
+  /* brand showcase */
+  .brandshow{margin-top:26px;background:linear-gradient(160deg,#fff,var(--beige));border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);display:grid;grid-template-columns:1.05fr .95fr;gap:8px;align-items:center;overflow:hidden}
+  .bs-copy{padding:40px}
+  .bs-copy h3{font-size:clamp(24px,3.2vw,32px);margin:16px 0 12px;color:var(--navy)}
+  .bs-copy p{font-size:15px;color:var(--ink);max-width:42ch;margin-bottom:18px}
+  .bs-points{list-style:none}
+  .bs-points li{position:relative;padding-left:26px;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:11px}
+  .bs-points li::before{content:"";position:absolute;left:0;top:1px;width:17px;height:17px;border-radius:50%;background:var(--gold);background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>');background-size:11px;background-repeat:no-repeat;background-position:center}
+  .bs-img{align-self:stretch;display:flex;align-items:center;justify-content:center;padding:24px 24px 24px 0}
+  .bs-img img{max-width:100%;max-height:440px;border-radius:14px;display:block;filter:drop-shadow(0 22px 40px rgba(21,53,107,.28))}
+
+  /* footer */
+  .footnote{text-align:center;padding:26px 22px 52px;font-size:12px;color:var(--muted)}
+  .footnote .priv{display:inline-flex;align-items:center;gap:7px}.footnote svg{width:13px;height:13px}
+  .disc{max-width:640px;margin:10px auto 0;opacity:.85;line-height:1.5}
+
+  @media(max-width:880px){
+    .hero .wrap{grid-template-columns:1fr;gap:36px}.orbit{max-width:360px;order:-1}
+    .panel{grid-template-columns:1fr}.aware .wrap{grid-template-columns:1fr 1fr;gap:22px}
+    .assures{width:100%;gap:16px}
+    .brandshow{grid-template-columns:1fr}
+    .bs-img{padding:0 28px 28px;order:-1}.bs-copy{padding:32px 28px 8px}
+  }
+  @media(max-width:560px){
+    .topbar .wrap{flex-direction:column;align-items:flex-start;gap:10px}
+    .aware .wrap{grid-template-columns:1fr}.hero h1{font-size:38px}
+    .form,.result{padding:24px}.bs-copy{padding:26px 24px 6px}.bs-img{padding:0 24px 24px}
+    .donut-box{flex-direction:column;text-align:center}.legend{width:100%}
+  }
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<div class="brandrow">
+  <div class="wrap">
+    <div class="logo">
+      <div class="mark"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5L9 9M17.5 6.5L15 9M6.5 17.5L9 15M17.5 17.5L15 15"/><circle cx="12" cy="12" r="3.2"/><circle cx="5" cy="5" r="1.6"/><circle cx="19" cy="5" r="1.6"/><circle cx="5" cy="19" r="1.6"/><circle cx="19" cy="19" r="1.6"/></svg></div>
+      <div><div class="name"><b>Saral</b> <span>Sampoorna</span></div><div class="tag">Daily Muscle Fuel · Real Protein, Real India</div></div>
+    </div>
+    <div class="assures">
+      <div class="assure"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></span>Evidence Based</div>
+      <div class="assure"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg></span>Indian Dietary Standards</div>
+      <div class="assure"><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>100% Private &amp; Secure</div>
+    </div>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">Daily Protein Calculator</span>
+      <h1><span class="b1">Your Protein.</span><br><span class="b2">Your Strength.</span><br><span class="b3">Your India.</span></h1>
+      <div class="rule"></div>
+      <p class="lead">Find out exactly how much protein your body needs each day — and which everyday foods get you there.</p>
+      <p class="sub">Small steps today. Stronger rotis tomorrow.</p>
+      <div class="cta-row">
+        <a href="#calculator" class="btn btn-primary">Calculate my protein <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#why" class="btn btn-ghost">Why it matters</a>
+      </div>
+    </div>
+    <div class="orbit">
+      <div class="ring"></div>
+      <div class="core"><svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6.5 6.5L9 9M17.5 6.5L15 9M6.5 17.5L9 15M17.5 17.5L15 15"/><circle cx="12" cy="12" r="3.4" fill="var(--gold)" stroke="none"/><circle cx="5" cy="5" r="1.8"/><circle cx="19" cy="5" r="1.8"/><circle cx="5" cy="19" r="1.8"/><circle cx="19" cy="19" r="1.8"/></svg></div>
+      <div class="node n-top float"><span class="ic blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7v6a3 3 0 0 0 3 3h2v3M18 7v6a3 3 0 0 1-3 3"/><circle cx="6" cy="5" r="1.5"/><circle cx="18" cy="5" r="1.5"/></svg></span>Build<small>Strength</small></div>
+      <div class="node n-right float d1"><span class="ic navy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-2 8 9-12h-7z"/></svg></span>Stay<small>Active</small></div>
+      <div class="node n-bottom float d2"><span class="ic gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19a3 3 0 0 1-3-3c-1.5-.5-2.5-2-2.5-3.8A3.7 3.7 0 0 1 5 9a3.3 3.3 0 0 1 3-4 3 3 0 0 1 4 0 3.3 3.3 0 0 1 3 4 3.7 3.7 0 0 1 1.5 3.2c0 1.8-1 3.3-2.5 3.8a3 3 0 0 1-3 3z"/></svg></span>Better<small>Focus</small></div>
+      <div class="node n-left float d3"><span class="ic green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 2-4 2-6-2 0-4.5.5-6 2M5 14c-1.5-1.5-2-4-2-6 2 0 4.5.5 6 2M12 21V8"/></svg></span>Boost<small>Immunity</small></div>
+    </div>
+  </div>
+</section>
+
+<section class="aware" id="why">
+  <div class="wrap">
+    <div class="fact"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0M16 11l2 2 4-4"/></svg></div><div><div class="big">1 in 2</div><p>Indians don't get enough protein each day</p></div></div>
+    <div class="fact"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v8M9 4l3-2 3 2M7 22c0-5 2-9 5-12 3 3 5 7 5 12z"/></svg></div><div><div class="big">~50%</div><p>of our daily protein comes from cereals like wheat</p></div></div>
+    <div class="fact"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="var(--good)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h6l-2-2M20 12h-6l2 2M12 3v6M12 15v6"/></svg></div><div><div class="big">Small swaps</div><p>add up to a big difference in your daily strength</p></div></div>
+    <div class="fact"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="var(--royal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3"/><path d="M5 21a7 7 0 0 1 14 0M18 8l2 2M6 8L4 10"/></svg></div><div><div class="big">For everyone</div><p>For you. For your family. For a healthier India.</p></div></div>
+  </div>
+</section>
+
+<section class="calc" id="calculator">
+  <div class="wrap">
+    <div class="calc-head">
+      <span class="eyebrow">Let's personalise your nutrition</span>
+      <h2>How much protein do you need?</h2>
+      <div class="rule" style="background:var(--royal)"></div>
+      <p>A few quick details and we'll show your daily target — plus the everyday foods that get you there.</p>
+    </div>
+
+    <div class="panel">
+      <div class="form">
+        <h3>Tell us about you</h3>
+        <p class="hint">All numbers stay on your device. Nothing is sent anywhere.</p>
+
+        <div class="field"><label>Your name <span class="req">*</span></label>
+          <input type="text" id="name" placeholder="What should we call you?" autocomplete="off"></div>
+
+        <div class="row2">
+          <div class="field"><label>Age <span class="req">*</span></label><input type="number" id="age" placeholder="Years" min="2" max="110"></div>
+          <div class="field"><label>Weight <span class="req">*</span></label><input type="number" id="weight" placeholder="kg" min="10" max="250"></div>
+        </div>
+
+        <div class="field"><label>Gender</label>
+          <div class="seg" id="gender"><button data-v="female">Female</button><button data-v="male" class="on">Male</button><button data-v="other">Other</button></div>
+        </div>
+
+        <div class="field"><label>Activity level <span class="req">*</span></label>
+          <div class="seg" id="activity" style="grid-template-columns:1fr 1fr">
+            <button data-v="1.0">Sedentary</button>
+            <button data-v="1.2" class="on">Lightly active</button>
+            <button data-v="1.5">Moderately active</button>
+            <button data-v="1.9">Very active</button>
+            <button data-v="2.4" style="grid-column:1 / -1">Athlete / building muscle</button>
+          </div>
+        </div>
+
+        <div class="field"><label>Diet preference</label>
+          <select id="diet"><option value="veg">Vegetarian</option><option value="egg">Eggetarian</option><option value="nonveg">Non-vegetarian</option><option value="vegan">Vegan</option></select>
+        </div>
+
+        <button class="btn btn-primary" id="calcBtn">Calculate now
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        <div class="err" id="err"></div>
+      </div>
+
+      <div class="result">
+        <div class="placeholder" id="placeholder">
+          <div class="glyph"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V9M9 19V5M14 19v-8M19 19v-5"/></svg></div>
+          <h4>Your daily target</h4>
+          <p>Fill in your details and your personalised protein target will appear right here.</p>
+        </div>
+
+        <div class="scoreview" id="scoreview">
+          <div class="targ-eyebrow" id="targEyebrow">Your daily protein target</div>
+          <div class="targ-num" id="targNum">0<small>g</small></div>
+          <div class="donut-box">
+            <div class="donut">
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="13"/>
+                <g id="donutSegs"></g>
+              </svg>
+              <div class="dc"><b id="donutTotal">0g</b><span>per day</span></div>
+            </div>
+            <div class="legend" id="legend"></div>
+          </div>
+
+          <div class="picks">
+            <div class="picks-head">
+              <span class="picks-title">Top picks to hit your target</span>
+              <div class="picks-toggle" id="picksToggle">
+                <button data-t="veg" class="on">Veg</button>
+                <button data-t="nonveg">Non-veg</button>
+              </div>
+            </div>
+            <ul class="picks-list" id="picksList"></ul>
+          </div>
+
+          <p class="note">Spreading protein across the day helps your body use it better than one large serving.</p>
+          <button class="restart" id="restart">↺ Recalculate</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRAND SHOWCASE -->
+    <div class="brandshow">
+      <div class="bs-copy">
+        <span class="eyebrow">Daily Muscle Fuel</span>
+        <h3>Reach your target, one roti at a time.</h3>
+        <p>Saral Sampoorna packs extra protein into the atta you already roll out every day — maximise roti-power while keeping the taste your family loves.</p>
+        <ul class="bs-points">
+          <li>Lab tested &amp; clinically verified</li>
+          <li>Perfect roti compatible — no change to your kneading</li>
+          <li>100% vegetarian · FSSAI certified</li>
+        </ul>
+      </div>
+      <div class="bs-img">
+        <img id="brandImg" alt="Saral Sampoorna protein atta — 1 kg pack" loading="lazy" src="img.jpeg">
+      </div>
+    </div>
+
+    <div class="footnote">
+      <span class="priv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> Your data is safe with us. We never share your information.</span>
+      <p class="disc">This calculator gives general guidance based on body weight and activity level. It is not medical advice. People with kidney conditions, pregnancy, or specific health needs should consult a registered dietitian or doctor.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  function seg(id){
+    var box=document.getElementById(id);
+    box.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+      box.querySelectorAll('button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');});
+    return function(){var on=box.querySelector('.on');return on?on.dataset.v:null;};
+  }
+  var getActivity=seg('activity'); seg('gender');
+
+  // protein per realistic Indian serving (grams). star = protein-dense pick.
+  var FOODS={
+    veg:[
+      {n:'Soya chunks',s:'50 g dry (1 katori cooked)',p:26,star:1},
+      {n:'Paneer',s:'100 g',p:18,star:1},
+      {n:'Rajma / chana',s:'1 katori cooked (~150 g)',p:13,star:1},
+      {n:'Tofu',s:'100 g',p:12},
+      {n:'Sprouted moong',s:'1 katori',p:9},
+      {n:'Toor / moong dal',s:'1 katori cooked',p:9},
+      {n:'Besan chilla',s:'2 medium',p:9},
+      {n:'Milk',s:'1 glass (250 ml)',p:8},
+      {n:'Peanuts',s:'30 g (small handful)',p:8},
+      {n:'Curd / dahi',s:'1 katori (150 g)',p:5},
+      {n:'Saral Sampoorna roti',s:'1 fortified roti',p:6,brand:1}
+    ],
+    nonveg:[
+      {n:'Chicken breast',s:'100 g cooked',p:27,star:1},
+      {n:'Mutton',s:'100 g cooked',p:25,star:1},
+      {n:'Prawns',s:'100 g',p:24,star:1},
+      {n:'Fish (rohu / surmai)',s:'100 g',p:22,star:1},
+      {n:'Egg whites',s:'3 whites',p:11},
+      {n:'Whole egg',s:'1 large',p:6},
+      {n:'Toor / moong dal',s:'1 katori cooked',p:9},
+      {n:'Curd / dahi',s:'1 katori (150 g)',p:5},
+      {n:'Saral Sampoorna roti',s:'1 fortified roti',p:6,brand:1}
+    ]
+  };
+
+  var lastTarget=0, currentTab='veg';
+  var C=2*Math.PI*50; // donut circumference (r=50)
+
+  function renderPicks(){
+    var list=FOODS[currentTab];
+    var top=list.filter(function(f){return !f.brand;}).slice().sort(function(a,b){return b.p-a.p;}).slice(0,5);
+    var roti=list.find(function(f){return f.brand;});
+    if(roti)top.push(roti);
+    var ul=document.getElementById('picksList'); ul.innerHTML='';
+    top.forEach(function(f){
+      var li=document.createElement('li');
+      li.innerHTML=(f.star?'<span class="star"></span>':'')+
+                   '<span class="pn">'+f.n+'<span class="ps">'+f.s+'</span></span>'+
+                   '<span class="pv">'+f.p+'<small> g</small></span>';
+      ul.appendChild(li);
+    });
+    document.querySelectorAll('#picksToggle button').forEach(function(b){b.classList.toggle('on',b.dataset.t===currentTab);});
+  }
+
+  function setDonut(target){
+    var segs=[{k:'Breakfast',f:0.30,c:'#7FA8DC'},{k:'Lunch',f:0.40,c:'var(--gold)'},{k:'Dinner',f:0.30,c:'#4E84CC'}];
+    var g=document.getElementById('donutSegs'); g.innerHTML='';
+    var legend=document.getElementById('legend'); legend.innerHTML='';
+    var cum=0, gap=10;
+    segs.forEach(function(s){
+      var len=s.f*C-gap;
+      var ns='http://www.w3.org/2000/svg';
+      var c=document.createElementNS(ns,'circle');
+      c.setAttribute('cx','60');c.setAttribute('cy','60');c.setAttribute('r','50');
+      c.setAttribute('fill','none');c.setAttribute('stroke',s.c);c.setAttribute('stroke-width','13');
+      c.setAttribute('stroke-linecap','round');
+      c.setAttribute('stroke-dasharray',Math.max(0,len)+' '+C);
+      c.setAttribute('transform','rotate('+(-90+cum*360)+' 60 60)');
+      g.appendChild(c);
+      cum+=s.f;
+      var row=document.createElement('div'); row.className='lrow';
+      row.innerHTML='<span class="d" style="background:'+s.c+'"></span><span class="k">'+s.k+'</span><span class="v">'+Math.round(target*s.f)+' g</span>';
+      legend.appendChild(row);
+    });
+  }
+
+  function calculate(){
+    var err=document.getElementById('err');
+    var name=document.getElementById('name').value.trim();
+    var age=parseFloat(document.getElementById('age').value);
+    var weight=parseFloat(document.getElementById('weight').value);
+    var mult=parseFloat(getActivity());
+    if(!name){err.textContent='Please tell us your name first.';return;}
+    if(!age||age<2||age>110){err.textContent='Please enter a valid age (2–110).';return;}
+    if(!weight||weight<10||weight>250){err.textContent='Please enter a valid weight in kg (10–250).';return;}
+    err.textContent='';
+    if(age>=65 && mult<1.2) mult=1.2; // older adults: at least ~1.0 g/kg
+
+    var RDA=0.83;                       // Indian RDA base (ICMR-NIN), g protein per kg
+    var gPerKg=RDA*mult;                // activity scales the base
+    var target=Math.round(weight*gPerKg);
+    lastTarget=target;
+    var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    document.getElementById('placeholder').style.display='none';
+    document.getElementById('scoreview').classList.add('show');
+    document.getElementById('targEyebrow').textContent=name.split(' ')[0]+', your daily protein target';
+    document.getElementById('donutTotal').textContent=target+'g';
+
+    setDonut(target);
+    renderPicks();
+
+    // count up number
+    var numEl=document.getElementById('targNum');
+    if(reduce){numEl.innerHTML=target+'<small>g</small>';}
+    else{
+      var t0=null,dur=900;
+      function step(ts){if(!t0)t0=ts;var p=Math.min(1,(ts-t0)/dur);
+        numEl.innerHTML=Math.round(target*(1-Math.pow(1-p,3)))+'<small>g</small>';if(p<1)requestAnimationFrame(step);}
+      requestAnimationFrame(step);
+    }
+    if(window.innerWidth<880){document.querySelector('.result').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});}
+  }
+
+  document.getElementById('calcBtn').addEventListener('click',calculate);
+  document.querySelectorAll('#name,#age,#weight').forEach(function(el){el.addEventListener('keydown',function(e){if(e.key==='Enter')calculate();});});
+  document.getElementById('diet').addEventListener('change',function(){
+    var d=this.value; currentTab=(d==='nonveg')?'nonveg':'veg';
+    if(lastTarget>0)renderPicks();
+  });
+  document.getElementById('picksToggle').addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b)return; currentTab=b.dataset.t;
+    document.getElementById('diet').value=(currentTab==='nonveg')?'nonveg':'veg';
+    if(lastTarget>0)renderPicks();
+  });
+  document.getElementById('restart').addEventListener('click',function(){
+    document.getElementById('scoreview').classList.remove('show');
+    document.getElementById('placeholder').style.display='block';
+    document.getElementById('name').focus();
+    document.querySelector('.form').scrollIntoView({behavior:'smooth',block:'center'});
+  });
+})();
+</script>
+</body>
+</html>
